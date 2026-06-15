@@ -1,29 +1,62 @@
 {
   "expo": {
-    "name": "Sports TV",
-    "slug": "sports-tv",
+    "name": "FIFAfy",
+    "slug": "fifafy",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "sportstv",
-    "userInterfaceStyle": "dark",
-    "newArchEnabled": true,
+    "icon": "./assets/icons/app-icon.png",
+    "scheme": "fifafy",
+    "userInterfaceStyle": "automatic",
     "ios": {
+      "icon": "./assets/icons/app-icon.png",
+      "bundleIdentifier": "com.nrbnayon.fifafy",
+      "buildNumber": "1",
       "supportsTablet": true
     },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/icons/app-icon.png",
+        "backgroundImage": "./assets/images/logo-glow.png",
+        "monochromeImage": "./assets/images/logo-glow.png"
+      },
+      "package": "com.nrbnayon.fifafy",
+      "predictiveBackGestureEnabled": false,
+      "versionCode": 1
+    },
     "web": {
-      "bundler": "metro",
-      "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
-      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icons/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "image": "./assets/icons/logo.png",
+            "backgroundColor": "#ffffff"
+          }
+        }
+      ],
       "expo-web-browser",
       "expo-video"
     ],
     "experiments": {
-      "typedRoutes": true
-    }
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "11d9a75e-84db-4bef-adbf-9d9791529546"
+      }
+    },
+    "owner": "nayonii"
   }
 }

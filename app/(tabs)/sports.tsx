@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trophy, Target, Flame } from 'lucide-react-native';
@@ -50,12 +51,14 @@ export default function SportsScreen() {
   const ListHeader = (
     <View style={styles.header}>
       <View style={styles.titleRow}>
-        <View style={[styles.iconContainer, { backgroundColor: 'rgba(34, 197, 94, 0.15)' }]}>
-          <Trophy color="#22c55e" size={22} strokeWidth={2} />
-        </View>
+        <Image 
+          source={require('@/assets/icons/logo.png')} 
+          style={{ width: 44, height: 44, borderRadius: 10, marginRight: 12 }} 
+          resizeMode="contain" 
+        />
         <View>
-          <Text style={[styles.title, { color: theme.text }]}>Sports TV</Text>
-          <Text style={[styles.subtitle, { color: theme.textMuted }]}>Live sports from around the world</Text>
+          <Text style={[styles.title, { color: theme.text, marginLeft: 0 }]}>FIFAfy Sports</Text>
+          <Text style={[styles.subtitle, { color: theme.textMuted, marginLeft: 0 }]}>Live sports from around the world</Text>
         </View>
       </View>
 

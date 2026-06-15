@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Radio, Sparkles } from 'lucide-react-native';
@@ -50,11 +51,13 @@ export default function AllChannelsScreen() {
   const ListHeader = (
     <View style={styles.header}>
       <View style={styles.titleRow}>
-        <View style={[styles.iconContainer, { backgroundColor: 'rgba(99, 102, 241, 0.15)' }]}>
-          <Radio color={theme.primary} size={20} strokeWidth={2} />
-        </View>
+        <Image 
+          source={require('@/assets/icons/logo.png')} 
+          style={{ width: 44, height: 44, borderRadius: 10, marginRight: 4 }} 
+          resizeMode="contain" 
+        />
         <View>
-          <Text style={[styles.title, { color: theme.text }]}>All Channels</Text>
+          <Text style={[styles.title, { color: theme.text }]}>FIFAfy</Text>
           <Text style={[styles.subtitle, { color: theme.textMuted }]}>
             {channels.length} channels available
           </Text>

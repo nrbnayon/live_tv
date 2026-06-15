@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
-import { View, StyleSheet, ActivityIndicator, Text, TouchableOpacity, Dimensions, Animated, Platform, Modal, ScrollView } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text, TouchableOpacity, Platform, Modal, ScrollView, Image } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -125,17 +125,27 @@ const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
     }
   }, [channel]);
 
+  const handleAutoSwitch = useCallback(() => {
+    if (!channel) return;
+    const currentIndex = channels.findIndex(c => c.id === channel.id);
+    const nextIndex = (currentIndex + 1) % channels.length;
+    const nextChannel = channels[nextIndex];
+    if (nextChannel && nextChannel.id !== channel.id) {
+      onChannelSwitch(nextChannel);
+    }
+  }, [channel, channels, onChannelSwitch]);
+
+  useEffect(() => {
+    if (bufferingTime > 0 && bufferingTime >= bufferThreshold) {
+      setBufferingTime(0);
+      handleAutoSwitch();
+    }
+  }, [bufferingTime, bufferThreshold, handleAutoSwitch]);
+
   useEffect(() => {
     if (isBuffering && autoSwitchOnBuffer && channel) {
       bufferTimerRef.current = setInterval(() => {
-        setBufferingTime(prev => {
-          const newTime = prev + 100;
-          if (newTime >= bufferThreshold) {
-            handleAutoSwitch();
-            return 0;
-          }
-          return newTime;
-        });
+        setBufferingTime(prev => prev + 100);
       }, 100);
     } else {
       if (bufferTimerRef.current) {
@@ -148,16 +158,6 @@ const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
       if (bufferTimerRef.current) clearInterval(bufferTimerRef.current);
     };
   }, [isBuffering, autoSwitchOnBuffer, bufferThreshold, channel]);
-
-  const handleAutoSwitch = useCallback(() => {
-    if (!channel) return;
-    const currentIndex = channels.findIndex(c => c.id === channel.id);
-    const nextIndex = (currentIndex + 1) % channels.length;
-    const nextChannel = channels[nextIndex];
-    if (nextChannel && nextChannel.id !== channel.id) {
-      onChannelSwitch(nextChannel);
-    }
-  }, [channel, channels, onChannelSwitch]);
 
   const handleWaiting = useCallback(() => setIsBuffering(true), []);
   const handlePlaying = useCallback(() => {
@@ -332,10 +332,12 @@ const VideoPlayer = forwardRef<VideoPlayerRef, VideoPlayerProps>(({
 
       {!channel && !loading && (
         <View style={[styles.placeholder]}>
-          <View style={styles.placeholderIcon}>
-            <Play color="#475569" size={48} strokeWidth={1.5} />
-          </View>
-          <Text style={styles.placeholderText}>Select a channel to start</Text>
+          <Image 
+            source={require('@/assets/icons/logo.png')} 
+            style={{ width: 100, height: 100, opacity: 0.9, marginBottom: 12 }} 
+            resizeMode="contain" 
+          />
+          <Text style={styles.placeholderText}>Welcome to FIFAfy</Text>
           <Text style={styles.placeholderSubtext}>{channels.length} channels available</Text>
         </View>
       )}
@@ -544,7 +546,7 @@ const styles = StyleSheet.create({
   liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#dc2626', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
   liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#fff' },
   liveText: { color: '#fff', fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
-  channelName: { color: '#fff', fontSize: 14, fontWeight: '600', textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
+  channelName: { color: '#fff', fontSize: 14, fontWeight: '600', ...Platform.select({ web: { textShadow: '0px 1px 4px rgba(0,0,0,0.75)' }, default: { textShadowColor: 'rgba(0, 0, 0, 0.75)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 } }) as any },
   controlsCenter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 24 },
   sideControl: { width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', alignItems: 'center' },
   playButton: { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(99, 102, 241, 0.9)', justifyContent: 'center', alignItems: 'center' },
@@ -558,7 +560,7 @@ const styles = StyleSheet.create({
   volumeThumb: { position: 'absolute', width: 12, height: 12, borderRadius: 6, backgroundColor: '#fff', top: -4, transform: [{ translateX: -6 }] },
   speedText: { color: '#fff', fontSize: 12, fontWeight: '600' },
   ratioText: { color: '#fff', fontSize: 11, fontWeight: '600' },
-  settingsMenu: { position: 'absolute', bottom: 65, right: 16, backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: 12, padding: 8, minWidth: 150 },
+  settingsMenu: { position: 'absolute', top: '50%', right: 16, transform: [{ translateY: -90 }] as any, backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: 12, padding: 8, minWidth: 150 },
   settingsMenuTitle: { color: '#94a3b8', fontSize: 12, marginBottom: 8, textAlign: 'center', fontWeight: 'bold' },
   settingsMenuItem: { paddingVertical: 10, paddingHorizontal: 12, backgroundColor: 'transparent', borderRadius: 8, marginBottom: 4 },
   settingsMenuItemActive: { backgroundColor: 'rgba(99, 102, 241, 0.5)' },

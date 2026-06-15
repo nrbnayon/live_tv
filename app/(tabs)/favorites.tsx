@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Star, Heart, Sparkles } from 'lucide-react-native';
 import { Channel } from '@/types/channel';
@@ -36,12 +36,14 @@ export default function FavoritesScreen() {
   const ListHeader = (
     <View style={styles.header}>
       <View style={styles.titleRow}>
-        <View style={[styles.iconContainer, { backgroundColor: 'rgba(244, 63, 94, 0.15)' }]}>
-          <Heart color="#f43f5e" size={22} strokeWidth={2} />
-        </View>
+        <Image 
+          source={require('@/assets/icons/logo.png')} 
+          style={{ width: 44, height: 44, borderRadius: 10, marginRight: 12 }} 
+          resizeMode="contain" 
+        />
         <View>
-          <Text style={[styles.title, { color: theme.text }]}>Favorites</Text>
-          <Text style={[styles.subtitle, { color: theme.textMuted }]}>
+          <Text style={[styles.title, { color: theme.text, marginLeft: 0 }]}>FIFAfy Favorites</Text>
+          <Text style={[styles.subtitle, { color: theme.textMuted, marginLeft: 0 }]}>
             {favorites.length > 0
               ? `${favoriteChannels.length} channels saved`
               : 'Your favorite channels'}
