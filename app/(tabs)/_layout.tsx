@@ -23,15 +23,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="all"
-        options={{
-          title: 'All Channels',
-          tabBarIcon: ({ color, size }) => (
-            <Radio color={color} size={size} strokeWidth={2} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="sports"
         options={{
           title: 'Sports',

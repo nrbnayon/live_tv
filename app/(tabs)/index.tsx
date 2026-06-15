@@ -4,10 +4,9 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  StyleSheet as RNStyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Tv, Zap, Sparkles } from 'lucide-react-native';
+import { Radio, Sparkles } from 'lucide-react-native';
 import { Channel } from '@/types/channel';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { ChannelCard } from '@/components/ChannelCard';
@@ -18,7 +17,7 @@ import { ALL_CHANNELS, getGroups } from '@/data/channels';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useTheme } from '@/contexts/SettingsContext';
 
-export default function LiveScreen() {
+export default function AllChannelsScreen() {
   const theme = useTheme();
   const [channels] = useState<Channel[]>(ALL_CHANNELS);
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
@@ -51,19 +50,21 @@ export default function LiveScreen() {
   const ListHeader = (
     <View style={styles.header}>
       <View style={styles.titleRow}>
-        <View style={[styles.iconContainer, { backgroundColor: 'rgba(251, 191, 36, 0.15)' }]}>
-          <Zap color="#fbbf24" size={20} strokeWidth={2} />
+        <View style={[styles.iconContainer, { backgroundColor: 'rgba(99, 102, 241, 0.15)' }]}>
+          <Radio color={theme.primary} size={20} strokeWidth={2} />
         </View>
         <View>
-          <Text style={[styles.title, { color: theme.text }]}>Live TV</Text>
-          <Text style={[styles.subtitle, { color: theme.textMuted }]}>Stream without interruptions</Text>
+          <Text style={[styles.title, { color: theme.text }]}>All Channels</Text>
+          <Text style={[styles.subtitle, { color: theme.textMuted }]}>
+            {channels.length} channels available
+          </Text>
         </View>
       </View>
 
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
-        placeholder="Search channels..."
+        placeholder="Search all channels..."
       />
 
       <GroupFilter
@@ -72,17 +73,28 @@ export default function LiveScreen() {
         onGroupSelect={setActiveGroup}
       />
 
-      <View style={[styles.quickStats, { backgroundColor: theme.card }]}>
-        <View style={styles.quickStatItem}>
-          <Text style={[styles.quickStatValue, { color: theme.text }]}>{filteredChannels.length}</Text>
-          <Text style={[styles.quickStatLabel, { color: theme.textMuted }]}>Available</Text>
+      <View style={[styles.statsContainer, { backgroundColor: theme.card }]}>
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.text }]}>{filteredChannels.length}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>Channels</Text>
         </View>
-        <View style={[styles.quickStatDivider, { backgroundColor: theme.border }]} />
-        <View style={styles.quickStatItem}>
-          <Text style={[styles.quickStatValue, { color: theme.text }]}>{favorites.length}</Text>
-          <Text style={[styles.quickStatLabel, { color: theme.textMuted }]}>Favorites</Text>
+        <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.text }]}>{groups.length - 1}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>Categories</Text>
+        </View>
+        <View style={[styles.statDivider, { backgroundColor: theme.border }]} />
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.text }]}>{favorites.length}</Text>
+          <Text style={[styles.statLabel, { color: theme.textMuted }]}>Favorites</Text>
         </View>
       </View>
+
+      {searchQuery && (
+        <Text style={[styles.resultsText, { color: theme.textMuted }]}>
+          {filteredChannels.length} result{filteredChannels.length !== 1 ? 's' : ''} for "{searchQuery}"
+        </Text>
+      )}
     </View>
   );
 
@@ -100,20 +112,20 @@ export default function LiveScreen() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['left', 'right']}>
         <View style={styles.videoSection}>
-          <Skeleton width="100%" height="100%" borderRadius={0} />
+          <View style={styles.videoPlaceholder}>
+            <Skeleton width="100%" height="100%" borderRadius={0} />
+          </View>
         </View>
         <View style={[styles.contentSection, { backgroundColor: theme.surface }]}>
           <View style={styles.header}>
             <View style={styles.titleRow}>
-              <Skeleton width={44} height={44} borderRadius={12} />
-              <View style={{ marginLeft: 12 }}>
-                <Skeleton width={100} height={24} borderRadius={4} />
-                <Skeleton width={150} height={12} borderRadius={4} style={{ marginTop: 4 }} />
-              </View>
+              <Skeleton width={28} height={28} borderRadius={6} />
+              <Skeleton width={150} height={28} borderRadius={6} />
             </View>
+            <Skeleton width={200} height={14} borderRadius={4} style={{ marginTop: 8 }} />
             <Skeleton width="90%" height={44} borderRadius={16} style={{ marginTop: 16 }} />
           </View>
-          {[1, 2, 3, 4].map(i => (
+          {[1, 2, 3, 4, 5].map(i => (
             <ChannelCardSkeleton key={i} />
           ))}
         </View>
@@ -129,7 +141,7 @@ export default function LiveScreen() {
           channels={filteredChannels}
           onChannelSwitch={handleChannelSwitch}
           autoSwitchOnBuffer={true}
-          bufferThreshold={5000}
+          bufferThreshold={10000}
         />
       </View>
 
@@ -138,7 +150,7 @@ export default function LiveScreen() {
           <View style={[styles.playingHeader, { backgroundColor: theme.primaryMuted }]}>
             <View style={styles.liveTag}>
               <View style={styles.liveDot} />
-              <Text style={styles.liveTagText}>LIVE</Text>
+              <Text style={styles.liveTagText}>NOW PLAYING</Text>
             </View>
             <Text style={[styles.playingName, { color: theme.text }]} numberOfLines={1}>{activeChannel.name}</Text>
           </View>
@@ -146,7 +158,7 @@ export default function LiveScreen() {
 
         <FlatList
           data={filteredChannels}
-          keyExtractor={item => 'live-' + item.id}
+          keyExtractor={item => 'all-' + item.id}
           renderItem={renderChannel}
           ListHeaderComponent={ListHeader}
           showsVerticalScrollIndicator={false}
@@ -155,7 +167,7 @@ export default function LiveScreen() {
             <View style={styles.emptyState}>
               <Sparkles color={theme.textDim} size={48} strokeWidth={1.5} />
               <Text style={[styles.emptyTitle, { color: theme.textDim }]}>No channels found</Text>
-              <Text style={[styles.emptyText, { color: theme.textMuted }]}>Try a different search or category</Text>
+              <Text style={[styles.emptyText, { color: theme.textMuted }]}>Try adjusting your search or filters</Text>
             </View>
           }
         />
@@ -164,13 +176,16 @@ export default function LiveScreen() {
   );
 }
 
-const styles = RNStyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0a0a12',
   },
   videoSection: {
     height: 220,
+  },
+  videoPlaceholder: {
+    flex: 1,
   },
   contentSection: {
     flex: 1,
@@ -217,7 +232,7 @@ const styles = RNStyleSheet.create({
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 4,
   },
   iconContainer: {
     width: 44,
@@ -234,31 +249,37 @@ const styles = RNStyleSheet.create({
   subtitle: {
     fontSize: 13,
     marginLeft: 12,
-    marginTop: 2,
+    marginBottom: 4,
   },
-  quickStats: {
+  statsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 12,
-    borderRadius: 12,
-    paddingVertical: 12,
-  },
-  quickStatItem: {
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingVertical: 16,
+    marginTop: 8,
+    borderRadius: 14,
+    marginBottom: 8,
   },
-  quickStatValue: {
-    fontSize: 20,
+  statItem: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  statValue: {
+    fontSize: 22,
     fontWeight: '700',
   },
-  quickStatLabel: {
+  statLabel: {
     fontSize: 11,
     marginTop: 2,
   },
-  quickStatDivider: {
+  statDivider: {
     width: 1,
-    height: 28,
+    height: 32,
+  },
+  resultsText: {
+    fontSize: 12,
+    marginTop: 8,
+    paddingHorizontal: 4,
   },
   listContent: {
     paddingBottom: 24,

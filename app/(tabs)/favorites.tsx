@@ -93,7 +93,7 @@ export default function FavoritesScreen() {
           channels={favoriteChannels.length > 0 ? favoriteChannels : ALL_CHANNELS}
           onChannelSwitch={handleChannelSwitch}
           autoSwitchOnBuffer={true}
-          bufferThreshold={5000}
+          bufferThreshold={10000}
         />
       </View>
 

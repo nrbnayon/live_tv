@@ -156,7 +156,7 @@ export default function SportsScreen() {
           channels={filteredChannels}
           onChannelSwitch={handleChannelSwitch}
           autoSwitchOnBuffer={true}
-          bufferThreshold={5000}
+          bufferThreshold={10000}
         />
       </View>
 

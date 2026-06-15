@@ -18,7 +18,7 @@ interface AppSettings {
   rememberLastChannel: boolean;
 
   // Quality
-  preferredQuality: 'auto' | 'low' | 'medium' | 'high';
+  preferredQuality: 'auto' | 'low' | 'medium' | 'high' | '2k' | '4k' | '8k';
   maxBitrate: number;
 
   // Notifications
@@ -41,7 +41,7 @@ interface AppSettings {
 const DEFAULT_SETTINGS: Omit<AppSettings, 'isDark'> = {
   themeMode: 'dark',
   autoSwitchOnBuffer: true,
-  bufferThreshold: 5000,
+  bufferThreshold: 10000,
   lowLatencyMode: true,
   defaultVolume: 0.8,
   autoPlay: true,

@@ -153,6 +153,9 @@ export default function SettingsScreen() {
     { value: 'low', label: 'Low (480p)' },
     { value: 'medium', label: 'Medium (720p)' },
     { value: 'high', label: 'High (1080p)' },
+    { value: '2k', label: '2K (1440p)' },
+    { value: '4k', label: '4K (2160p)' },
+    { value: '8k', label: '8K (4320p)' },
   ];
 
   return (
@@ -389,7 +392,7 @@ export default function SettingsScreen() {
                       settings.preferredQuality === q.value && { backgroundColor: theme.primary, borderColor: theme.primary },
                       { backgroundColor: settings.preferredQuality === q.value ? theme.primary : theme.card, borderColor: settings.preferredQuality === q.value ? theme.primary : theme.border }
                     ]}
-                    onPress={() => settings.updateSetting('preferredQuality', q.value as 'auto' | 'low' | 'medium' | 'high')}
+                    onPress={() => settings.updateSetting('preferredQuality', q.value as any)}
                   >
                     <Text style={[
                       styles.qualityText,
